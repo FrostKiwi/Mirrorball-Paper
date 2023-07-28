@@ -1,25 +1,7 @@
 \documentclass[10pt]{article}
-
-% Nutze Times New Roman
-\usepackage{newtxtext}
-\usepackage{newtxmath}
-
-\usepackage{graphicx}
-\usepackage{url,hyperref}
-\usepackage{multicol}
-\usepackage[caption=false]{subfig}
-
-\usepackage{geometry}
-\geometry{a4paper, top=2cm, left=3cm, right=2cm, bottom=3cm}
-
-\providecommand{\keywords}[1]
-{
-  \small	
-  \textbf{\textit{Keywords---}} #1
-}
+\input{init.tex}
 
 \begin{document}
-
 \title{Improved mirror ball projection for more accurate merging of multiple camera outputs}
 
 \author{Yoko Hirono, Wladislav Artsimovich \\
@@ -101,7 +83,6 @@ $$\begin{bmatrix} image_x \\ image_y \end{bmatrix}=\frac{1}{\sqrt{2(r_z+1)}\sin{
 \section{Conclusion}
 This paper extended the classical mirror sphere projection term by a new distortion scalar $\sin{\left(\frac{\alpha}{4}\right)}$ and its field of view parameter $\alpha$. This parameter allows one to express the distortion numerically, that is introduced by a perspective camera, when capturing a mirror ball projection. By counteracting this distortion, a more accurate registration of multiple camera outputs was achieved, when capturing the same mirror ball projection from different viewpoints.
 
-\bibliographystyle{abbrv}
 \bibliography{references}
 \end{multicols}
 \end{document}
