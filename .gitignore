@@ -13,6 +13,9 @@
 .*.lb
 2023-Artsimovich-Hirono.pdf
 
+.vscode
+img/*.pdf
+
 ## Intermediate documents:
 *.dvi
 *.xdv
