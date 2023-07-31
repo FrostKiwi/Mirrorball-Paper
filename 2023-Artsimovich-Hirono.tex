@@ -4,8 +4,11 @@
 \begin{document}
 \title{Improved mirror ball projection for more accurate merging of multiple camera outputs}
 
-\author{Yoko Hirono, Wladislav Artsimovich \\
+\author{Yoko Hirono*, Wladislav Artsimovich \\
 	\\
+	*DMG MORI CO. LTD.,\\
+	2-3-23 Shiomi, Koto-ku, Tokyo 135-0052 Japan\\
+	\href{mailto:wladislav.artsimovich@dmgmori.co.jp}{yo-hirono@dmgmori.co.jp}  \\
 	\href{mailto:wladislav.artsimovich@dmgmori.co.jp}{wladislav.artsimovich@dmgmori.co.jp}  \\
 }
 
@@ -55,7 +58,7 @@
 	What may make this projection an attractive option for process monitoring, is that the mirror itself can be made to withstand extreme conditions at relatively low cost. For instance, stainless steel ball bearings are a mass-produced commodity, that can survive high heat environments, whilst producing a mirror ball projection. Moreover, multiple cameras can be pointed at the same mirror sphere, all identically encoding the full 360° environment, regardless of camera position, at least mathematically. This allows for merging of multiple camera outputs into a single video feed, a technique referred to as 'image registration'.
 
 	\section{The projection term}
-	The mirror ball projection term, as used in this paper, maps a 3D reflection vector $\vec{r}$, as defined by the column vector, to the corresponding pixel on the 2D plane of an image, as defined by the column vector $\begin{bmatrix} {image}_x & {image}_y \end{bmatrix}^\intercal$. The origin of the coordinate system is at the center of the mirror ball, which itself is defined as a unit sphere, projecting onto the image plane as a unit circle.
+	The mirror ball projection term, as used in this paper, maps a 3D reflection vector $\vec{r}$, as defined by the column vector, to the corresponding pixel on the 2D plane of an image, as defined by the column vector $\begin{bmatrix} {image}_x & {image}_y \end{bmatrix}^\intercal$. The origin of the coordinate system is at the center of the mirror ball, which itself is defined as a unit sphere, projecting onto the image plane as a unit disk.
 
 	The term is a projection, which expresses a virtual camera-view at the center of an infinitely large sphere, allowing one to look around the full 360° environment, as reflected by the mirror surface of the imaged sphere.
 
