@@ -2,9 +2,9 @@
 \input{init.tex}
 
 \begin{document}
-\title{Improved mirror ball projection for more accurate merging of multiple camera outputs}
+\title{Improved mirror ball projection for more accurate merging of multiple camera outputs and process monitoring}
 
-\author{Yoko Hirono*, Wladislav Artsimovich \\
+\author{Yoko Hirono*, Wladislav Artsimovich*, ** \\
 	\\
 	*DMG MORI CO. LTD.,\\
 	2-3-23 Shiomi, Koto-ku, Tokyo 135-0052 Japan\\
@@ -26,22 +26,22 @@
 	\centering
 	\subfloat[Color live stream]{
 		\includegraphics[width=0.23\textwidth]{img/multi_color.png}
-		\label{fig:subfig1}
+		\label{fig:color}
 	}
 	\hfill
 	\subfloat[Infrared live stream]{
 		\includegraphics[width=0.23\textwidth]{img/multi_thermal.png}
-		\label{fig:subfig2}
+		\label{fig:thermal}
 	}
 	\hfill
 	\subfloat[Projected color view]{
 		\includegraphics[width=0.23\textwidth]{img/projected_color.jpg}
-		\label{fig:subfig3}
+		\label{fig:color_proj}
 	}
 	\hfill
 	\subfloat[Projected thermal view]{
 		\includegraphics[width=0.23\textwidth]{img/projected_thermal.jpg}
-		\label{fig:subfig4}
+		\label{fig:thermal_proj}
 	}
 
 	\caption{Multi-source mirror ball live stream of a laser cladding process}
@@ -51,18 +51,47 @@
 \begin{multicols}{2}
 	\section{Introduction}
 
-	Spherical mirror projections are used in a wide variety of applications as a substitute for wide-angle or panoramic camera systems. This extends to the field of robotics with omnidirectional camera systems as shown in \cite{omnidirectional} and to the field of computer graphics with various 'image-based lighting' techniques 2) or novel ways of displaying content 3). A less explored use case is process monitoring.
+	Spherical mirror projections are used in a wide variety of applications as a substitute for wide-angle or panoramic camera systems. This extends to the field of robotics with 'omnidirectional sensors' as used in \cite{omnidirectional} and to the field of computer graphics with various 'image-based lighting' techniques (\cite{lightprobe}) or novel ways of displaying and interacting with panoramic content (\cite{dome}). A less explored use case is process monitoring.
 
-	A mirror sphere is mathematically the simplest form of a spherical mirror and projects the full 360° environment onto a 2D plane, when captured with an orthographic camera. Whilst an orthographic camera can be achieved in the real-world with the use of a telecentric lens, almost all cameras are perspective ones. A distortion around the pole-point of the projection is introduced by merely approximating an orthographic camera when using a perspective one, especially at lower focal lengths.
+	The mirror ball can be made to withstand extreme conditions at relatively low cost. For instance, stainless steel ball bearings are a mass-produced commodity, that can survive high heat environments, whilst producing a mirror ball projection. Moreover, multiple cameras can be pointed at the same mirror sphere, all identically encoding the full 360° environment, regardless of camera position, at least mathematically. This allows for merging of multiple camera outputs into a single video feed.
 
-	What may make this projection an attractive option for process monitoring, is that the mirror itself can be made to withstand extreme conditions at relatively low cost. For instance, stainless steel ball bearings are a mass-produced commodity, that can survive high heat environments, whilst producing a mirror ball projection. Moreover, multiple cameras can be pointed at the same mirror sphere, all identically encoding the full 360° environment, regardless of camera position, at least mathematically. This allows for merging of multiple camera outputs into a single video feed, a technique referred to as 'image registration'.
+	A mirror ball is mathematically the simplest spherical mirror and projects the full 360° environment onto a 2D plane, when captured with an orthographic camera. Whilst an orthographic camera can be achieved in the real-world with the use of a telecentric lens, almost all cameras are perspective ones. Distortion at the pole-point of the projection is introduced by merely approximating an orthographic camera when using a perspective one.
+
+	\begin{figure*}
+		\centering
+		\subfloat[Scene setup]{
+			\includegraphics[height=0.19\textwidth]{img/distortion_setup.jpg}
+			\label{fig:ball_setup}
+		}
+		\hfill
+		\subfloat[Captured mirror ball]{
+			\includegraphics[height=0.19\textwidth]{img/distortion_ball.jpg}
+			\label{fig:ball_result}
+		}
+		\hfill
+		\subfloat[Pole-point, classical term]{
+			\includegraphics[height=0.19\textwidth]{img/dist1.png}
+			\label{fig:classic}
+		}
+		\hfill
+		\subfloat[Pole-point, improved term]{
+			\includegraphics[height=0.19\textwidth]{img/dist2.png}
+			\label{fig:improved}
+		}
+	
+		\caption{Setup to show the distortion correction}
+		\label{fig:distort}
+	\end{figure*}
 
 	\section{The projection term}
-	The mirror ball projection term, as used in this paper, maps a 3D reflection vector $\vec{r}$, as defined by the column vector, to the corresponding pixel on the 2D plane of an image, as defined by the column vector $\begin{bmatrix} {image}_x & {image}_y \end{bmatrix}^\intercal$. The origin of the coordinate system is at the center of the mirror ball, which itself is defined as a unit sphere, projecting onto the image plane as a unit disk.
+	The mirror ball projection term, as used in this paper, maps the 3D reflection vector $\vec{r}$, as defined by the column vector $	\begin{bmatrix}
+		r_x & r_y & r_z
+	\end{bmatrix}^\intercal$, to the corresponding pixel on the 2D plane of an image, as defined by the column vector $\begin{bmatrix} {image}_x & {image}_y \end{bmatrix}^\intercal$. The origin of the coordinate system is at the center of the mirror ball, which itself is defined as a unit sphere, projecting onto the image plane as a unit disk.
 
 	The term is a projection, which expresses a virtual camera-view at the center of an infinitely large sphere, allowing one to look around the full 360° environment, as reflected by the mirror surface of the imaged sphere.
 
 	\subsection{Deriving the classical mirror ball projection term}
+
 	The orthographic camera has its parallel view-rays defined by the incident ray column vector as written in Equation \ref{eq:cam}. As an orthographic camera captures the image, both the image's x,y-plane and the camera's x,y-plane are identical.
 	\begin{equation}\label{eq:cam}
 		\vec{i}=\begin{bmatrix}
@@ -91,12 +120,13 @@
 	\end{equation}
 
 	\subsection{Extending the projection term}
-	The classical projection term Eq. \ref{eq:simple_project} suffers from distortion around the pole-point, as seen in Fig. 2b, because it assumes an orthographic camera. A perspective camera obscures part of the mirror sphere as a function of sphere radius and distance from the center. The true pole-point of the projection is thus not actually captured.
+	The classical projection term Eq. \ref{eq:simple_project} suffers from distortion around the pole-point, as seen in Fig. \ref{fig:classic}, because it assumes an orthographic camera. A perspective camera obscures part of the mirror sphere as a function of sphere radius and distance from the center. The true pole-point of the projection is thus not actually captured. This issue may be side-stepped by use of another geometries, such as basing the mirror on a parabola, as shown in \cite{hyperbolic}. Staying with the mirror ball, the projection can also be adjusted to account for the mis-match between mathematical model and captured real-life mirror ball, by defining the blind spot inherit to capturing the mirror ball with a perspective camera.
 
-	The missing information can be conceived as the cone-shaped 'solid angle', defined by $2\pi-\alpha$, $\pi<\alpha<2\pi$, where $\alpha$ expresses the field of view in radians, that the mirror sphere is reflecting from the perspective of the camera's image. Any mapping from $\vec{r}$ going outside of the sphere's view cone will remain undefined. We need to remap the existing information to only fall within this cone. This can be achieved by stretching the reflection ray's image mapping by some scalar, specifically $\sin{\left(\frac{\alpha}{4}\right)}$. This ratio stems from the amount of surface representing the reflected information decreasing by the sine of the reflected angle divided by 4, as we go from the middle point of the sphere to its edges. By stretching the reflection rays and allowing them to become undefined when going past the image plane's unit circle, we rigidly define the missing information. This shows up as a black circle in place of the classical mirror ball projection's pole-point, depicted in Fig. 2c. Including said stretching scalar, results in the new and improved mirror ball projection term, shown in Equation \ref{eq:improved_project}. This term has been implemented in a demo WebApp, which can be accessed alongside sample photos and video footage on GitHub: \href{https://github.com/FrostKiwi/MirrorBall}{github.com/FrostKiwi/MirrorBall}
+	The missing information can be conceived as the cone-shaped 'solid angle', defined by $360\degree -\alpha$, $180\degree<\alpha<360\degree$, where $\alpha$ expresses the field of view, that the mirror sphere is reflecting from the perspective of the camera's image. Any mapping from $\vec{r}$ going outside of the sphere's view cone will remain undefined. We need to remap the existing information to only fall within the visible cone. This can be achieved by stretching the reflection ray's image mapping by scalar $\sin{\left(\frac{\alpha}{4}\right)}$. This ratio stems from the amount of surface representing the reflected information decreasing by the sine of the reflected angle divided by 4, as we go from the middle point of the sphere to its edges. By stretching the reflection rays and allowing them to become undefined when going past the image plane's unit circle, we rigidly define the missing information. This shows up as a black circle in place of the classical mirror ball projection's pole-point, depicted in Fig. \ref{fig:improved}. Note how the lines of the wall are parallel, as they are in real-life with the correction of the improved term. Including said stretching scalar, results in the new and improved mirror ball projection term, shown in Equation \ref{eq:improved_project}. This term has been implemented in a demo WebApp, which can be accessed alongside sample photos and video footage on GitHub: \href{https://github.com/FrostKiwi/MirrorBall}{github.com/FrostKiwi/MirrorBall}
 	\begin{equation}\label{eq:improved_project}
 		\begin{bmatrix} image_x \\ image_y \end{bmatrix}=\frac{1}{\sqrt{2(r_z+1)}\sin{\left(\frac{\alpha}{4}\right)}}\begin{bmatrix} r_x \\ r_y \end{bmatrix}
 	\end{equation}
+
 	\section{Process monitoring use case}
 	Placeholder
 	\begin{figure}[H]
@@ -111,12 +141,25 @@
 		}
 	\end{figure}
 	\subsection{Multi-source registration}
-	Multiple camera views capturing the same mirror ball projection can be rotated into each other by a 3x3 rotation matrix, achieving image registration. Fig. 1a shows a mirror ball inside a DMG MORI 'LASERTEC 3000 DED hybrid' industry machine being captured using normal camera from the outside and a thermal camera from the inside of the machine. Fig 1b and 1c show the resulting mirror ball video feeds during laser cladding. Note, how both feeds show the hot metal sparks in different parts of the reflection. After correcting for the different rotations, both feeds are merged and can be switched between, as shown in figures Fig 1d and 1e. Even though the camera positions are different, the projections are at least mathematically in the exact same spot, thus having no parallax. Since these are 360° video feeds, they can be viewed with a VR headset, as shown in Fig. 2d. The captured $3k^2$ pixel resolution color image provides enough clarity to monitor the process, whilst the ability to switch to thermal vision in VR augments the monitoring experience.
+	Multiple camera views capturing the same mirror ball projection can be rotated into each other by a 3x3 rotation matrix, achieving image registration. Fig. \ref{fig:outside} shows a mirror ball inside a DMG MORI 'LASERTEC 3000 DED hybrid' industry machine being captured using normal camera from the outside and a thermal camera from the inside of the machine. Fig. \ref{fig:color} and \ref{fig:thermal} show the resulting mirror ball video feeds during laser cladding. Note, how both feeds show the hot metal sparks in different parts of the reflection. After correcting for the different rotations, both feeds are merged and can be switched between, as shown in figures \ref{fig:color_proj} and \ref{fig:thermal_proj}. Even though the camera positions are different, the projections are at least mathematically in the exact same spot, thus having no parallax. Since these are 360° video feeds, they can be viewed with a VR headset, as shown in Fig. 2d. The captured $3k^2$ pixel resolution color live-stream provides enough clarity to monitor the machine's state, whilst the ability to switch to thermal vision in VR augments the monitoring experience. A further $4k^2$ pixel resolution color-only live-stream has been made to compare the clarity of the result of using a longer focal-length zoom lens, which has the ability to fill out the picture frame with the mirror ball, where as previously a digital zoom had to be used to, reducing color image resolution. Snippets from both the $4k^2$ and combined source live stream have been made available in the demo WebApp to be viewed by the reader.
+
+	\subsection{Ball size, quality and parallax}
+	\begin{figure}[H]
+		\subfloat[Chrome steel ball, 100mm]{
+			\includegraphics[height=0.47\linewidth]{img/ball_10cm.png}
+			\label{fig:100mm}
+		}
+		\hfill
+		\subfloat[Stainless steel ball, 50mm]{
+			\includegraphics[height=0.47\linewidth]{img/ball_5cm.png}
+			\label{fig:50mm}
+		}
+	\end{figure}
 
 	\section{Conclusion}
 	This paper extended the classical mirror sphere projection term by a new distortion scalar $\sin{\left(\frac{\alpha}{4}\right)}$ and its field of view parameter $\alpha$. This parameter allows one to express the distortion numerically, that is introduced by a perspective camera, when capturing a mirror ball projection. By counteracting this distortion, a more accurate registration of multiple camera outputs was achieved, when capturing the same mirror ball projection from different viewpoints.
 
-	Monitoring a process via a mirror ball has has highlighted the sensitivity of the setup.
+	Monitoring a process via a mirror ball has highlighted the fragility of the setup and will not produce better quality results when compared to a wide-angle camera, installed at the spot of the mirror ball. Whether the drawbacks of the mirror ball setup can justify it's use, will depend on the difficulty of setting up a more traditional vision system. However, it can become a viable option, if a camera cannot be installed at the monitoring spot, but a mirror ball with clear line-of-sight to a camera can.
 
 	\bibliography{references}
 \end{multicols}
