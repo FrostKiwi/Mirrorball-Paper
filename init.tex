@@ -1,8 +1,18 @@
 % Times New Roman
 \usepackage{newtxtext}
 \usepackage{newtxmath}
-% Math symbols like degree
+% degree symbol
 \usepackage{gensymb}
+
+\DeclareFontEncoding{LS1}{}{}
+\DeclareFontSubstitution{LS1}{stix}{m}{n}
+\DeclareRobustCommand{\diameter}{%
+  \text{\usefont{LS1}{stixscr}{m}{n}\symbol{"60}}%
+}
+
+
+% 8-bit text encoding 
+\usepackage[T1]{fontenc}
 
 \usepackage{graphicx}
 \usepackage{url,hyperref}
