@@ -4,12 +4,12 @@
 \begin{document}
 \title{Improved mirror ball projection for more accurate merging of multiple camera outputs and process monitoring}
 
-\author{Yoko Hirono*, Wladislav Artsimovich*, ** \\
+\author{Wladislav Artsimovich*, Yoko Hirono** \\
 	\\
-	*DMG MORI CO. LTD.,\\
+	**DMG MORI CO. LTD.,\\
 	2-3-23 Shiomi, Koto-ku, Tokyo 135-0052 Japan\\
-	\href{mailto:wladislav.artsimovich@dmgmori.co.jp}{yo-hirono@dmgmori.co.jp}  \\
 	\href{mailto:wladislav.artsimovich@dmgmori.co.jp}{wladislav.artsimovich@dmgmori.co.jp}  \\
+	\href{mailto:wladislav.artsimovich@dmgmori.co.jp}{yo-hirono@dmgmori.co.jp}  \\
 }
 
 \maketitle
@@ -108,7 +108,7 @@
 	\end{equation}
 	Simplifying Eq. \ref{eq:insert}, it expresses this system of equations:
 	\begin{equation}\label{eq:system}
-		\left\{\begin{matrix}r_x=2n_z\ {image}_x\\r_y=2n_{z\ }{image}_y\\r_z=2{n_z}^2-1\ \ \ \ \ \\\end{matrix}\right.
+		\left\{\begin{matrix}r_x=2n_z\ {image}_x\\r_y=2n_{z\ }{image}_y\\r_z=2{n_z}-1\ \ \ \ \ \\\end{matrix}\right.
 	\end{equation}
 	However, we need this system the other way around. We want to get the correct image pixel, based on the reflection direction $\vec{r}$. Solving the 3rd equation of Eq. \ref{eq:system} for $n_z$, gives us
 	\begin{equation}\label{eq:substitute}
@@ -157,12 +157,12 @@
 	Captured were a $3k^2$ pixel resolution color live-stream and combined with a low-resolution infrared stream to augment the monitoring experience. A further $4k^2$ px resolution color-only live-stream has been made to compare the impact of resolution. Snippets from both the $4k^2$ px and combined source live stream have been made available in the demo WebApp to be viewed by the reader and are also attached as supplementary material.
 
 	\subsection{Quality evaluation}
-	As expected from the mirror ball projection, the resolution towards the pole-point is weak, but everywhere else shows a well defined image, with enough resolution to properly judge the state of the machine. Even so, fine adjustments of the machine's tools cannot be reliably performed based on this view, as the resolution stretched across the projection's 360\degree  view leaves resolution not enough to judge distances on the millimeter scale. Increasing the resolution does not necessarily constitute a solution, since the ball's surface blemishes also gain increased influence. One the flip-side, bringing a bigger sphere too close to the monitoring target influences the result via parallax, as discussed in \ref{parallax}.
+	As expected from the mirror ball projection, the resolution towards the pole-point is weak, but everywhere else shows a well defined image, with enough resolution to properly judge the state of the machine. Even so, fine adjustments of the machine's tools cannot be reliably performed based on this view, as the resolution stretched across the projection's $360\degree-\alpha$ field of view does not leave enough resolution to judge distances on the millimeter scale. Increasing the resolution does not necessarily constitute a solution, since the ball's surface blemishes also gain increased prominence. One the flip-side, bringing a bigger sphere too close to the monitoring target influences the result via parallax, as discussed in \ref{parallax}.
 	
 	Additionally two mirror balls of different size have been captured without the protective glass in the way, shown in Fig. \ref{fig:100mm} and \ref{fig:50mm}. Based on the model, the smaller the ball, the wider its field of view, when captured with a perspective camera. In reality, a ball which is too small needs a rather advanced lens to be properly focused. Futhermore, surface blemishes and scratches throw off the camera's auto-focus. The projection of the mirror ball \ref{fig:50mm} shows a softness to the projection, because the auto-focus accidentally focused on the scratches, instead of the environment in the  mirror image. On the flip-side, the projection of the larger ball \ref{fig:100mm} shows stronger parallax distortion, making image registration less reliable. Flipping between the two shows how the ball size changes the projection in slight ways, leading to an alignment which is not perfect.
 
 	\subsection{Multi-source registration}
-	Multiple camera views capturing the same mirror ball projection can be rotated into each other by a 3x3 rotation matrix, achieving image registration. Fig. \ref{fig:color} and \ref{fig:thermal} show the resulting mirror ball video feeds during laser cladding. Note, how both feeds show the hot metal sparks in different parts of the reflection. After correcting for the different rotations, both feeds are merged and can be switched between, as shown in figures \ref{fig:color_proj} and \ref{fig:thermal_proj}. Alignment settings become invalid, as soon as a camera is moved though, leading to a fragile setup. Even though the camera positions are different, the projections are at least mathematically in the exact same spot, thus having no parallax, according to the model.
+	Multiple camera views capturing the same mirror ball projection can be rotated into each other by a 3x3 rotation matrix, achieving image registration. Fig. \ref{fig:color} and \ref{fig:thermal} show the resulting mirror ball video feeds during laser cladding. Note, how both feeds show the hot metal sparks in different parts of the reflection. After correcting for the different rotations, both feeds are merged and can be switched between, as shown in figures \ref{fig:color_proj} and \ref{fig:thermal_proj}. Alignment settings become invalid as soon as a camera is moved though, leading to a fragile setup. Even though the camera positions are different, the projections are at least mathematically in the exact same spot, thus having no parallax, according to the model.
 	
 	\subsection{Parallax}\label{parallax}
 	In reality the mirror balls have a physical size, thus their reflections originate from the surface, creating a new kind of parallax, easily observed by viewing the mounting point of the mirror ball, which shows strong distortion. Without Z-depth data, this cannot be corrected for. Whether the parallax is important enough to influence this use-case is entirely dependant on the balance between ball size and distance to the monitoring target. As a general rule, targets further away than the ball's diameter, preserve their shape in the projection well, though this a subjective statement. Finally, aligning based on one target leads to mis-alignment in the rest of the projection, an effect more pronounced with increasing ball size.
