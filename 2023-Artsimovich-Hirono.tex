@@ -104,7 +104,7 @@
 	\end{equation}
 	As per definition, the surface normal at each point of a unit sphere with its center at the origin, equals the vector as drawn from the origin to the surface at each point. With the orthographic camera's definition Eq. \ref{eq:cam}, the normal vector and the incident ray share the same xy-plane, leaving just the depth component of the normal $n_z$ as an unknown. Using that information, we can populate the law of reflection Eq. \ref{eq:law} and express the reflection vector $\vec{r}$ with the image's xy-plane:
 	\begin{equation}\label{eq:insert}
-		\left[\begin{matrix}r_x\\r_y\\r_z\\\end{matrix}\right]=2\left(\left[\begin{matrix}0\\0\\1\\\end{matrix}\right]\cdot\left[\begin{matrix}{image}_x\\{image}_y\\n_z\\\end{matrix}\right]\right)\left[\begin{matrix}{image}_x\\{image}_y\\n_z\\\end{matrix}\right]-\left[\begin{matrix}0\\0\\1\\\end{matrix}\right]
+			
 	\end{equation}
 	Simplifying Eq. \ref{eq:insert}, it expresses this system of equations:
 	\begin{equation}\label{eq:system}
@@ -112,7 +112,7 @@
 	\end{equation}
 	However, we need this system the other way around. We want to get the correct image pixel, based on the reflection direction $\vec{r}$. Solving the 3rd equation of Eq. \ref{eq:system} for $n_z$, gives us
 	\begin{equation}\label{eq:substitute}
-		n_z=\ \sqrt{\frac{\left(r_z+1\right)}{2}}
+		n_z=\ \sqrt{\frac{r_z+1}{2}}
 	\end{equation}
 	Finally, we may substitute $n_z$ as defined by Eq. \ref{eq:substitute} into equation 1 and 2 of system Eq. \ref{eq:system} Simplifying the substitution gives us our mirror ball projection term:
 	\begin{equation}\label{eq:simple_project}
