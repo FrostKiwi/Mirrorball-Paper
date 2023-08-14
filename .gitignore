@@ -29,7 +29,8 @@ img/*.pdf
 .pdf
 
 ## Bibliography auxiliary files (bibtex/biblatex/biber):
-*.bbl
+# Bibtex needed for ArXiV
+#*.bbl
 *.bcf
 *.blg
 *-blx.aux
